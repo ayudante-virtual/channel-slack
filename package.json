@@ -1,0 +1,17 @@
+{
+  "name": "channel-slack",
+  "fullName": "Channel - Slack",
+  "version": "1.0.0",
+  "status": "stable",
+  "description": "Conector de Slack para Botpress",
+  "private": true,
+  "main": "dist/backend/index.js",
+  "author": "Seblaz",
+  "license": "AGPL-3.0-only",
+  "scripts": {
+    "build": "\"$PWD/build.sh\"",
+    "start": "cd botpress && yarn start",
+    "watch": "cd botpress && yarn cmd watch:modules --m channel-slack-av",
+    "watch:botpress": "cd botpress && yarn watch"
+  }
+}
