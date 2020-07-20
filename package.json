@@ -9,9 +9,10 @@
   "author": "Seblaz",
   "license": "AGPL-3.0-only",
   "scripts": {
-    "build": "\"$PWD/build.sh\"",
-    "start": "cd botpress && yarn start",
+    "build:botpress": "\"$PWD/build.sh\"",
+    "start:botpress": "cd botpress && yarn start",
     "watch": "cd botpress && yarn cmd watch:modules --m channel-slack-av",
-    "watch:botpress": "cd botpress && yarn watch"
+    "build": "cd botpress/modules/channel-slack-av && yarn build",
+    "package": "cd botpress/modules/channel-slack-av && yarn package"
   }
 }

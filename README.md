@@ -8,15 +8,21 @@ Canal de Slack para utlizar en Botpress.
  
 ### Instalación
 
-    yarn build
+    yarn build:botpress
 
 ### Comandos disponibles
 
-#### `yarn start`
-
+#### `yarn start:botpress`
 Inicia botpress.
 
-#### `yarn start`
+#### `yarn watch`
+Recompila el módulo en cada cambio
+
+#### `yarn build`
+Compila el módulo
+
+#### `yarn package`
+Arma un archivo `channel-slack-av.tgz` listo para la distribución.
 
 ### Permisos
 Se utilizan los siguientes permisos de Slack:

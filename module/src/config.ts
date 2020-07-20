@@ -4,11 +4,19 @@ export interface Config {
    * @default false
    */
   enabled: boolean
+
   /**
    * This is the value of "Bot User OAuth Access Token" on the page OAuth & Permissions
    * @default your_bot_token
    */
   botToken: string
+
+  /**
+   * This is the value of the Bot Id required for an app to ignore messages from itself.
+   * @default your_bot_id
+   */
+  botId: string
+
   /**
    * The value of Signing Secret on page Basic Information
    * @default signin_secret
@@ -20,13 +28,7 @@ export interface Config {
    * This uses caching for efficiency.
    * @default true
    */
-  fetchUserInfo: boolean
-
-  /**
-   * Use the legacy RTM api
-   * @default false
-   */
-  useRTM: boolean
+  endpoint: string
 
   /**
    * The duration of the authentication session when a user authenticate through this channel.
