@@ -1,10 +1,13 @@
 # Slack Channel
 
-## Prerequisite
+## Prerequisito
 
-- Set the `externalUrl` field in botpress.config.json
+- Setear la variable `externalUrl`.
 
 ## Steps
+
+### Instalación
+Instalar el módulo navegando a `Modules -> Channel - Slack Av`.
 
 ### Create the app on Slack
 
@@ -20,16 +23,9 @@
 
 ### Configure your bot
 
-1. Edit `data/bots/YOUR_BOT_ID/config/channel-slack.json` (or create it) and set
+1. Copiar el archivo `data/global/config/channel-slack-av.json` a `data/bots/YOUR_BOT_ID/config/channel-slack.json` y setear las variables de configuración.
 
-- enabled: Set to `true`
-- signingSecret: Take the value `Signing Secret` on the page **`Basic Information`**
-- botToken: Take the value `Bot User OAuth Access Token` on the page **`OAuth & Permissions`**
-
-2. Restart Botpress
-
-![botToken](./assets/botToken.png)
-![signingSecret](./assets/secret.png)
+2. Reiniciar Botpress
 
 ### Configure Callback on Slack
 

@@ -1,0 +1,6 @@
+web_addr: 0.0.0.0:4040
+log: stdout
+tunnels:
+  botpress:
+    addr: botpress:3000
+    proto: http

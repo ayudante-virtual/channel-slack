@@ -1,12 +1,15 @@
-import { App, ExpressReceiver } from '@slack/bolt'
-import { Context } from '@slack/bolt/dist/types/middleware'
+import {Context} from '@slack/bolt/dist/types/middleware'
+// @ts-ignore
 import * as sdk from 'botpress/sdk'
+// @ts-ignore
 import _ from 'lodash'
 
-import { Config } from '../config'
+import {Config} from '../config'
 
-import { Clients } from './typings'
+import {Clients} from './typings'
+import app, {SlackApp} from "./app";
 
+// @ts-ignore
 const debug = DEBUG('channel-slack-av')
 const debugIncoming = debug.sub('incoming')
 const debugOutgoing = debug.sub('outgoing')
@@ -15,49 +18,35 @@ const outgoingTypes = ['text', 'image', 'actions', 'typing', 'carousel']
 
 
 export class SlackClient {
-    private logger: sdk.Logger
-    private bolt: App
+    private readonly logger: sdk.Logger
     private contexts: Map<string, Context>
+    private app: SlackApp;
 
-    constructor(private bp: typeof sdk, private botId: string, private config: Config, private router) {
+    constructor(private bp: typeof sdk,
+                private botId: string,
+                private config: Config,
+                private router,
+                private installationRepository
+    ) {
         this.logger = bp.logger.forBot(botId)
         this.contexts = new Map<string, Context>()
     }
 
     async initialize() {
-        if (!this.config.signingSecret) {
-            return this.logger.error(
-                `[${this.botId}] The signing secret must be configured to use this channel.`
-            )
-        }
-
-        await this.setupBoltApp()
+        this.app = app(
+            this.botId,
+            await this.router.getPublicPath(),
+            this.logger,
+            this.installationRepository,
+            this.config
+        )
+        this.listenToMessages()
+        this.listenToActions()
+        this.router.use(this.app.getReceiver().app)
     }
 
-
-    private async setupBoltApp() {
-        const endpoint = `/${this.botId}${this.config.endpoint}`
-        const expressReceiver = new ExpressReceiver({
-            signingSecret: this.config.signingSecret,
-            endpoints: endpoint
-        })
-
-        this.bolt = new App({
-            token: this.config.botToken,
-            botId: this.config.botId,
-            receiver: expressReceiver
-        })
-
-        await this.listenToMessages()
-        await this.listenToActions()
-
-        this.router.use(expressReceiver.app)
-        const publicPath = await this.router.getPublicPath()
-        this.logger.info(`[${this.botId}] Slack Bolt Endpoint URL: ${publicPath.replace('BOT_ID', this.botId)}${endpoint}`)
-    }
-
-    private async listenToMessages() {
-        this.bolt.message(async ({message, context, body}) => {
+    private listenToMessages() {
+        this.app.getApp().message(async ({message, context, body}) => {
             const discardedSubtypes = ['bot_message', 'message_deleted', 'message_changed']
             if (!discardedSubtypes.includes(message.subtype)) {
                 debugIncoming(`Received real time message %o`, message)
@@ -76,8 +65,8 @@ export class SlackClient {
         })
     }
 
-    async listenToActions() {
-        this.bolt.action({type: 'block_actions'}, async ({ack, action, respond, context, body}) => {
+    private listenToActions() {
+        this.app.getApp().action({type: 'block_actions'}, async ({ack, action, respond, context, body}) => {
             await ack()
 
             if (action.type === 'button') {
@@ -121,17 +110,6 @@ export class SlackClient {
                 await this.bp.events.updateEvent(event.id, {feedback})
             }
         })
-
-        // this.bolt.action({action_id: 'option_selected'}, async ({ack, action, respond, context, body}) => {
-        //     debugIncoming(`Received option %o`, action)
-        //     console.log('action', action)
-        //     console.log('body', body)
-        //     // const label = _.get(payload, 'actions[0].selected_option.text.text', '')
-        //     // const value = _.get(payload, 'actions[0].selected_option.value', '')
-        //     //
-        //     // //  await axios.post(payload.response_url, { text: `*${label}*` })
-        //     // await this.sendEvent(payload, {type: 'quick_reply', text: label, payload: value})
-        // })
     }
 
     private async sendEvent(
@@ -218,7 +196,7 @@ export class SlackClient {
 
         debugOutgoing(`Sending message %o`, message)
 
-        await this.bolt.client.chat.postMessage(message)
+        await this.app.getApp().client.chat.postMessage(message)
 
         next(undefined, false)
     }

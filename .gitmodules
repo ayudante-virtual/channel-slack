@@ -1,4 +1,0 @@
-[submodule "botpress"]
-	path = botpress
-	url = git@github.com:botpress/botpress.git
-	shallow = true

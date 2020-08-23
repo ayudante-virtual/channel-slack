@@ -1,0 +1,23 @@
+version: '3.7'
+services:
+  ngrok:
+    build:
+      './ngrok/'
+    ports:
+      - "4040:4040"
+
+  botpress:
+    build:
+      './botpress/'
+    environment:
+      BOTPRESS_VERSION: 12.10.2
+    volumes:
+      - botpress-data:/botpress/out/bp/data
+      - ./module/:/botpress/modules/channel-slack-av
+    ports:
+      - "3000:3000"
+    depends_on:
+      - ngrok
+
+volumes:
+  botpress-data:

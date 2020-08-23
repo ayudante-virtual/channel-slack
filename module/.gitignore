@@ -7,3 +7,4 @@
 botpress.d.ts
 global.d.ts
 channel-slack-av.tgz
+yarn-error.log
