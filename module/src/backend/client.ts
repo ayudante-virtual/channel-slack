@@ -19,7 +19,6 @@ const outgoingTypes = ['text', 'image', 'actions', 'typing', 'carousel']
 
 export class SlackClient {
     private readonly logger: sdk.Logger
-    private contexts: Map<string, Context>
     private app: SlackApp;
 
     constructor(private bp: typeof sdk,
@@ -29,7 +28,6 @@ export class SlackClient {
                 private installationRepository
     ) {
         this.logger = bp.logger.forBot(botId)
-        this.contexts = new Map<string, Context>()
     }
 
     async initialize() {
@@ -113,21 +111,27 @@ export class SlackClient {
     }
 
     private async sendEvent(
-        {context, body, payload, type, preview, teamId, userId, channelId}: {
+        {context, body, payload, type, preview, userId, channelId}: {
             context: Context; body: any, payload: any, type: string,
             preview: string, teamId: string, userId: string, channelId: string
         }) {
 
-        this.contexts.set(teamId, context)
         await this.bp.events.sendEvent(
             this.bp.IO.Event({
                 botId: this.botId,
                 channel: 'slack',
                 direction: 'incoming',
-                payload: {payload, body},
+                payload: {
+                    payload,
+                    body,
+                    context: {
+                        ...context,
+                        client: this.app.getApp().client
+                    }
+                },
                 type: type,
                 preview: preview,
-                threadId: `${teamId} ${channelId}`,
+                threadId: `${context.botToken} ${channelId}`,
                 target: userId
             })
         )
@@ -155,13 +159,11 @@ export class SlackClient {
             blocks.push(event.payload.quick_replies)
         }
 
-        const [team, channel] = event.threadId.split(' ')
-        const context = this.contexts.get(team)
+        const [botToken, channel] = event.threadId.split(' ')
         const message = {
             text: event.payload.text,
             channel: channel,
-            blocks,
-            token: context.botToken
+            blocks
         }
 
         if (event.payload.collectFeedback && messageType === 'text') {
@@ -196,7 +198,10 @@ export class SlackClient {
 
         debugOutgoing(`Sending message %o`, message)
 
-        await this.app.getApp().client.chat.postMessage(message)
+        await this.app.getApp().client.chat.postMessage({
+            ...message,
+            token: botToken
+        })
 
         next(undefined, false)
     }
