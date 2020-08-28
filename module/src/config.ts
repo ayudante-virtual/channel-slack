@@ -36,6 +36,7 @@ export interface Config {
     /**
      * Type of app. Can be 'single' for Single Workspace apps or
      * 'multiple' for Multiple Workspaces Apps.
+     * @default multiple
      */
     type: 'single' | 'multiple'
 
@@ -43,7 +44,6 @@ export interface Config {
      * This is the value of "Bot User OAuth Access Token" on the page
      * OAuth & Permissions. Only required when using the single
      * workspace installation.
-     * @default your_bot_token
      */
     botToken?: string
 

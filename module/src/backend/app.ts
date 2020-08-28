@@ -55,14 +55,17 @@ class SingleWorkspaceApp extends SlackApp {
 
 class MultiWorkspaceApp extends SlackApp {
     private installationRepository: InstallationRepository;
+    private logger: any;
 
     constructor(
         botId: string,
         installationRepository: InstallationRepository,
-        config: Config
+        config: Config,
+        logger: any
     ) {
         super(botId);
         this.installationRepository = installationRepository
+        this.logger = logger;
 
         this.receiver = new ExpressReceiver({
             signingSecret: config.signingSecret,
@@ -122,6 +125,7 @@ class MultiWorkspaceApp extends SlackApp {
             team: installation.team.id,
             installation: JSON.stringify(installation)
         })
+        this.logger.info(`Bot instalado para el equipo ${installation.team.id}`)
     }
 
     private fetchInstallation = async (InstallQuery): Promise<Installation> => {
@@ -161,7 +165,7 @@ export default (
 ): SlackApp => {
     const app = config.type === "single" ?
         new SingleWorkspaceApp(botId, config) :
-        new MultiWorkspaceApp(botId, repository, config);
+        new MultiWorkspaceApp(botId, repository, config, logger);
 
     app.logUrls(logger, publicPath, config)
 

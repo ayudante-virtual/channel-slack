@@ -27,15 +27,22 @@ export default class InstallationRepository {
             installation: installation
         }
 
-        if (await this.getInstallation({team})) {
-            return this.knex(this.table)
-                .where({team})
-                .update({
-                    ...data,
-                    updated_at: this.knex.fn.now()
-                });
+        try {
+            await this.getInstallation({team})
+        } catch (e) {
+            if (e instanceof InstallationNotFoundError) {
+                return this.knex(this.table).insert(data);
+            } else {
+                throw e; // let others errors bubble up
+            }
         }
-        return this.knex(this.table).insert(data);
+
+        return this.knex(this.table)
+            .where({team})
+            .update({
+                ...data,
+                updated_at: this.knex.fn.now()
+            });
     }
 
     getInstallation({team}) {
@@ -43,5 +50,14 @@ export default class InstallationRepository {
             .where({team})
             .select('installation')
             .first()
+            .then(installation => {
+                if (!installation)
+                    throw new InstallationNotFoundError(`El bot no fue instalado en el equipo ${team}.`)
+                return installation
+            })
     }
+}
+
+
+class InstallationNotFoundError extends Error {
 }
