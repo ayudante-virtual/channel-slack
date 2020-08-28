@@ -1,7 +1,7 @@
 {
   "name": "channel-slack-av",
   "fullName": "Channel - Slack Av",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "status": "stable",
   "description": "A complete Botpress connector for Slack",
   "private": true,
