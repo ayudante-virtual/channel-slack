@@ -131,7 +131,9 @@ class MultiWorkspaceApp extends SlackApp {
     private fetchInstallation = async (InstallQuery): Promise<Installation> => {
         const installation = await this.installationRepository
             .getInstallation({team: InstallQuery.teamId})
-        return JSON.parse(installation.installation)
+        if(typeof installation.installation === 'string')
+            return JSON.parse(installation.installation)
+        return installation.installation
     }
 
     public getInstallUrl(config: Config) {

@@ -6,18 +6,30 @@ services:
     ports:
       - "4040:4040"
 
+  postgres:
+    image: postgres:12.4-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres-data2:/var/lib/postgresql/data
+
   botpress:
     build:
       './botpress/'
     environment:
-      BOTPRESS_VERSION: 12.10.2
+      - BOTPRESS_VERSION=12.10.2
+      - PORT=3000
+#      - DATABASE_URL=postgres://postgres:postgres@postgres:5432/postgres
     volumes:
       - botpress-data:/botpress/out/bp/data
       - ./module/:/botpress/modules/channel-slack-av
     ports:
-      - "3000:3000"
+      - "3001:3000"
     depends_on:
       - ngrok
+      - postgres
 
 volumes:
   botpress-data:
+  postgres-data2:
