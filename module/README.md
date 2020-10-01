@@ -23,7 +23,7 @@ Instalar el módulo navegando a `Modules -> Channel - Slack Av`.
 
 ### Configure your bot
 
-1. Copiar el archivo `data/global/config/channel-slack-av.json` a `data/bots/YOUR_BOT_ID/config/channel-slack.json` y setear las variables de configuración.
+1. Copiar el archivo `data/global/config/channel-slack.json` a `data/bots/YOUR_BOT_ID/config/channel-slack.json` y setear las variables de configuración.
 
 2. Reiniciar Botpress
 

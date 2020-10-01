@@ -1,9 +1,9 @@
 {
   "name": "channel-slack-av",
   "fullName": "Channel - Slack Av",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "status": "stable",
-  "description": "A complete Botpress connector for Slack",
+  "description": "A complete Botpress connector for Slack supporting multi-workspaces channels",
   "private": true,
   "main": "dist/backend/index.js",
   "author": "Seblaz",

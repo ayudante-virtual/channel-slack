@@ -17,7 +17,7 @@ const onServerStarted = async (bp: typeof sdk) => {
 }
 
 const onServerReady = async (bp: typeof sdk) => {
-  router = bp.http.createRouterForBot('channel-slack-av', {
+  router = bp.http.createRouterForBot('channel-slack', {
     checkAuthentication: false,
     enableJsonBodyParser: false,
     enableUrlEncoderBodyParser: false
@@ -25,7 +25,7 @@ const onServerReady = async (bp: typeof sdk) => {
 }
 
 const onBotMount = async (bp: typeof sdk, botId: string) => {
-  const config = (await bp.config.getModuleConfigForBot('channel-slack-av', botId, true)) as Config
+  const config = (await bp.config.getModuleConfigForBot('channel-slack', botId, true)) as Config
 
   if (config.enabled) {
     const bot = new SlackClient(bp, botId, config, router, repository)
@@ -51,12 +51,12 @@ const entryPoint: sdk.ModuleEntryPoint = {
   onBotMount,
   onBotUnmount,
   definition: {
-    name: 'channel-slack-av',
+    name: 'channel-slack',
     menuIcon: 'none',
-    menuText: 'Channel Slack',
+    menuText: 'Channel Slack AV',
     noInterface: true,
-    fullName: 'Slack',
-    homepage: 'https://ayudante-virtual.github.io'
+    fullName: 'Slack AV',
+    homepage: 'https://ayudantes.ninja/channel-slack'
   }
 }
 

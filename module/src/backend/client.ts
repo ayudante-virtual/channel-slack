@@ -10,7 +10,7 @@ import {Clients} from './typings'
 import app, {SlackApp} from "./app";
 
 // @ts-ignore
-const debug = DEBUG('channel-slack-av')
+const debug = DEBUG('channel-slack')
 const debugIncoming = debug.sub('incoming')
 const debugOutgoing = debug.sub('outgoing')
 

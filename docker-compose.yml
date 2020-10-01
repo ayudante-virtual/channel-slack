@@ -24,8 +24,9 @@ services:
     volumes:
       - botpress-data:/botpress/out/bp/data
       - ./module/:/botpress/modules/channel-slack-av
+      - ./channel-slack.json:/botpress/out/bp/data/bots/test/config/channel-slack.json
     ports:
-      - "3001:3000"
+      - "3000:3000"
     depends_on:
       - ngrok
       - postgres
